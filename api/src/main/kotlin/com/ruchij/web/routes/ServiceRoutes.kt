@@ -1,6 +1,7 @@
 package com.ruchij.web.routes
 
 import com.ruchij.services.health.HealthService
+import com.ruchij.services.health.models.HealthCheck
 import com.ruchij.services.health.models.ServiceInformation
 import org.http4k.core.Method.GET
 import org.http4k.core.Response
@@ -14,6 +15,9 @@ object ServiceRoutes {
         routes(
             "/info" bind GET to {
                 ServiceInformation.lens(healthService.serviceInformation(), Response(OK))
+            },
+            "/health-check" bind GET to {
+                HealthCheck.lens(healthService.healthCheck(), Response(OK))
             }
         )
 }

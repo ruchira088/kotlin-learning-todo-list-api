@@ -12,6 +12,7 @@ repositories {
 }
 
 dependencies {
+    implementation(project(":migration-app"))
     implementation(platform("org.http4k:http4k-bom:4.9.0.2"))
     implementation("org.http4k:http4k-core")
     implementation("org.http4k:http4k-server-netty")
