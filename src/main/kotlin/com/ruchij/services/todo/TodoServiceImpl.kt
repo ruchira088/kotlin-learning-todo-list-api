@@ -3,7 +3,7 @@ package com.ruchij.services.todo
 import com.ruchij.daos.todo.TodoItemDao
 import com.ruchij.daos.todo.models.TodoItem
 import com.ruchij.exceptions.ResourceNotFoundException
-import com.ruchij.services.clock.Clock
+import com.ruchij.types.clock.Clock
 import com.ruchij.services.random.RandomGenerator
 import java.util.*
 

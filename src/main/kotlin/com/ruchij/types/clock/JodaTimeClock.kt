@@ -1,4 +1,4 @@
-package com.ruchij.services.clock
+package com.ruchij.types.clock
 
 import org.joda.time.DateTime
 

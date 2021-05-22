@@ -1,6 +1,6 @@
 package com.ruchij
 
-import com.ruchij.services.clock.JodaTimeClock
+import com.ruchij.types.clock.JodaTimeClock
 import com.ruchij.services.health.HealthServiceImpl
 import com.ruchij.web.Router
 import org.http4k.server.Netty
