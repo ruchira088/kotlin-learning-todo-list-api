@@ -24,13 +24,26 @@ class TodoServiceImpl(
     }
 
     override fun findById(id: UUID): TodoItem =
-        todoItemDao.findById(id) ?: throw ResourceNotFoundException("")
+        todoItemDao.findById(id) ?: throw ResourceNotFoundException("Unable to find todo item with id = $id")
 
-    override fun deleteById(id: UUID): TodoItem {
-        TODO("Not yet implemented")
-    }
+    override fun deleteById(id: UUID): TodoItem =
+        todoItemDao.deleteById(id) ?: throw ResourceNotFoundException("Unable to find todo item with id = $id")
 
-    override fun updateById(id: UUID, title: String?, description: String?, completion: Boolean?): TodoItem {
-        TODO("Not yet implemented")
-    }
+    override fun updateById(id: UUID, title: String?, description: String?, completion: Boolean?): TodoItem =
+        findById(id).let {
+            todoItem ->
+                val timestamp = clock.timestamp()
+
+                val updatedTodoItem =
+                    todoItem.copy(
+                        modifiedAt = timestamp,
+                        title = title ?: todoItem.title,
+                        description = description ?: todoItem.description,
+                        completedAt = completion?.let { if (it) timestamp else null } ?: todoItem.completedAt
+                    )
+
+                todoItemDao.update(updatedTodoItem)
+
+                return updatedTodoItem
+        }
 }
