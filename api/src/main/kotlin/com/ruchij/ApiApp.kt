@@ -7,7 +7,7 @@ import org.http4k.server.Netty
 import org.http4k.server.asServer
 
 fun main() {
-    val healthService = HealthServiceImpl(JodaTimeClock)
+    val healthService = HealthServiceImpl(JodaTimeClock, TODO())
 
     Router.create(healthService).asServer(Netty(8000)).start()
 }
