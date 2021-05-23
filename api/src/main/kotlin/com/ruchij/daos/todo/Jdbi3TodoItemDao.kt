@@ -1,7 +1,7 @@
 package com.ruchij.daos.todo
 
-import com.ruchij.daos.jdbi3.DateTimeArgument
-import com.ruchij.daos.jdbi3.UuidArgument
+import com.ruchij.daos.jdbi3.arguments.DateTimeArgument
+import com.ruchij.daos.jdbi3.arguments.UuidArgument
 import com.ruchij.daos.todo.models.TodoItem
 import com.ruchij.utils.Extensions.nullableType
 import org.jdbi.v3.core.Handle

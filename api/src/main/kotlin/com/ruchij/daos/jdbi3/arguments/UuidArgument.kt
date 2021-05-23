@@ -1,15 +1,14 @@
-package com.ruchij.daos.jdbi3
+package com.ruchij.daos.jdbi3.arguments
 
 import org.jdbi.v3.core.argument.Argument
 import org.jdbi.v3.core.statement.StatementContext
-import org.joda.time.DateTime
 import java.sql.PreparedStatement
-import java.sql.Timestamp
+import java.util.*
 
-class DateTimeArgument(private val dateTime: DateTime): Argument {
+class UuidArgument(private val uuid: UUID): Argument {
 
     override fun apply(position: Int, statement: PreparedStatement?, ctx: StatementContext?) {
-        statement?.setTimestamp(position, Timestamp(dateTime.millis))
+        statement?.setString(position, uuid.toString())
     }
 
 }

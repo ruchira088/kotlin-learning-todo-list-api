@@ -8,6 +8,6 @@ data class TodoItem(
     val createdAt: DateTime,
     val modifiedAt: DateTime,
     val title: String,
-    val description: String,
+    val description: String?,
     val completedAt: DateTime?
 )

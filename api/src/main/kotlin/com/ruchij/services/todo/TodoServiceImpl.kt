@@ -5,6 +5,7 @@ import com.ruchij.daos.todo.models.TodoItem
 import com.ruchij.exceptions.ResourceNotFoundException
 import com.ruchij.types.clock.Clock
 import com.ruchij.services.random.RandomGenerator
+import com.ruchij.utils.Extensions.foldNullable
 import java.util.*
 
 class TodoServiceImpl(
@@ -12,11 +13,11 @@ class TodoServiceImpl(
     private val randomGenerator: RandomGenerator<UUID>,
     private val todoItemDao: TodoItemDao
 ) : TodoService {
-    override fun create(title: String, description: String): TodoItem {
+    override fun create(title: String, maybeDescription: String?): TodoItem {
         val timestamp = clock.timestamp()
         val id = randomGenerator.generate()
 
-        val todoItem = TodoItem(id, timestamp, timestamp, title, description, null)
+        val todoItem = TodoItem(id, timestamp, timestamp, title, maybeDescription, null)
 
         todoItemDao.insert(todoItem)
 
@@ -29,7 +30,7 @@ class TodoServiceImpl(
     override fun deleteById(id: UUID): TodoItem =
         todoItemDao.deleteById(id) ?: throw ResourceNotFoundException("Unable to find todo item with id = $id")
 
-    override fun updateById(id: UUID, title: String?, description: String?, completion: Boolean?): TodoItem =
+    override fun updateById(id: UUID, maybeTitle: String?, maybeDescription: String?, maybeCompletion: Boolean?): TodoItem =
         findById(id).let {
             todoItem ->
                 val timestamp = clock.timestamp()
@@ -37,9 +38,9 @@ class TodoServiceImpl(
                 val updatedTodoItem =
                     todoItem.copy(
                         modifiedAt = timestamp,
-                        title = title ?: todoItem.title,
-                        description = description ?: todoItem.description,
-                        completedAt = completion?.let { if (it) timestamp else null } ?: todoItem.completedAt
+                        title = maybeTitle ?: todoItem.title,
+                        description = maybeDescription.foldNullable({ todoItem.description}) { it.takeUnless { value -> value.isEmpty() }},
+                        completedAt = maybeCompletion.foldNullable({ todoItem.completedAt }) { completed -> timestamp.takeUnless { completed } }
                     )
 
                 todoItemDao.update(updatedTodoItem)
