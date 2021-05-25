@@ -7,5 +7,8 @@ fun interface RandomGenerator<out T> {
 
     companion object {
         val uuid:  RandomGenerator<UUID> = RandomGenerator<UUID> { UUID.randomUUID() }
+
+        fun <T> constant(value: T): RandomGenerator<T> =
+            RandomGenerator { value }
     }
 }
