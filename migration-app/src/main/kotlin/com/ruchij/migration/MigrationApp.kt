@@ -2,9 +2,9 @@ package com.ruchij.migration
 
 import com.ruchij.migration.config.DatabaseConfig
 import com.ruchij.migration.config.MigrationConfig
+import com.ruchij.migration.models.MigrationResult
 import com.sksamuel.hoplite.ConfigLoader
 import org.flywaydb.core.Flyway
-import org.flywaydb.core.api.output.MigrateResult
 import org.slf4j.LoggerFactory
 
 private val logger = LoggerFactory.getLogger("com.ruchij.migration.MigrationApp")
@@ -19,13 +19,13 @@ fun main() {
     logger.info("Schema version: ${result.targetSchemaVersion}")
 }
 
-fun runMigration(databaseConfig: DatabaseConfig): MigrateResult {
+fun runMigration(databaseConfig: DatabaseConfig): MigrationResult {
     val flyway =
         Flyway.configure()
             .dataSource(databaseConfig.url, databaseConfig.user, databaseConfig.password)
             .load()
 
-    val result: MigrateResult = flyway.migrate()
+    val result = flyway.migrate()
 
-    return result
+    return MigrationResult(result.migrationsExecuted, result.targetSchemaVersion)
 }
