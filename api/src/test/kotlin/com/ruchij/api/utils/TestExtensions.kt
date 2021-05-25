@@ -16,5 +16,4 @@ object TestExtensions {
         val (name, value) = headerValue
         assertEquals(value, header(name))
     }
-
 }

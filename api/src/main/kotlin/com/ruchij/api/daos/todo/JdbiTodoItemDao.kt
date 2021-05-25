@@ -1,7 +1,7 @@
 package com.ruchij.api.daos.todo
 
-import com.ruchij.api.daos.jdbi3.arguments.DateTimeArgument
-import com.ruchij.api.daos.jdbi3.arguments.UuidArgument
+import com.ruchij.api.daos.jdbi.arguments.DateTimeArgument
+import com.ruchij.api.daos.jdbi.arguments.UuidArgument
 import com.ruchij.api.daos.todo.models.TodoItem
 import com.ruchij.api.utils.Extensions.nullableType
 import org.jdbi.v3.core.Handle
@@ -10,7 +10,7 @@ import org.jdbi.v3.core.kotlin.mapTo
 import java.lang.Exception
 import java.util.*
 
-class Jdbi3TodoItemDao(private val jdbi: Jdbi): TodoItemDao {
+class JdbiTodoItemDao(private val jdbi: Jdbi) : TodoItemDao {
 
     override fun insert(todoItem: TodoItem) =
         jdbi.useHandle<Exception> { handle ->
@@ -35,9 +35,7 @@ class Jdbi3TodoItemDao(private val jdbi: Jdbi): TodoItemDao {
     override fun deleteById(id: UUID): TodoItem? =
         jdbi.inTransaction<TodoItem?, Exception> { handle ->
             findById(id, handle)?.also {
-                handle.createUpdate(
-                    "DELETE FROM todo_item WHERE id = :id"
-                )
+                handle.createUpdate("DELETE FROM todo_item WHERE id = :id")
                     .bind("id", UuidArgument(id))
                     .one()
             }

@@ -11,7 +11,7 @@ import org.http4k.core.Method.GET
 import org.http4k.core.Request
 import org.http4k.core.Status
 import org.joda.time.DateTime
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 
 class ServiceRoutesTest {
     @Test

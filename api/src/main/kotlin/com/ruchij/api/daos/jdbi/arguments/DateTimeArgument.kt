@@ -1,4 +1,4 @@
-package com.ruchij.api.daos.jdbi3.arguments
+package com.ruchij.api.daos.jdbi.arguments
 
 import org.jdbi.v3.core.argument.Argument
 import org.jdbi.v3.core.statement.StatementContext

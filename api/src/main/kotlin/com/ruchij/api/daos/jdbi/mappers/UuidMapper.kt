@@ -1,8 +1,7 @@
-package com.ruchij.api.daos.mappers
+package com.ruchij.api.daos.jdbi.mappers
 
 import org.jdbi.v3.core.mapper.ColumnMapper
 import org.jdbi.v3.core.statement.StatementContext
-import java.lang.IllegalStateException
 import java.sql.ResultSet
 import java.util.*
 

@@ -1,9 +1,10 @@
 package com.ruchij.api
 
 import com.ruchij.api.config.ApiConfiguration
-import com.ruchij.api.daos.mappers.DateTimeMapper
-import com.ruchij.api.daos.mappers.UuidMapper
-import com.ruchij.api.daos.todo.Jdbi3TodoItemDao
+import com.ruchij.api.daos.jdbi.JdbiConfiguration
+import com.ruchij.api.daos.jdbi.mappers.DateTimeMapper
+import com.ruchij.api.daos.jdbi.mappers.UuidMapper
+import com.ruchij.api.daos.todo.JdbiTodoItemDao
 import com.ruchij.api.services.health.HealthServiceImpl
 import com.ruchij.api.services.random.RandomGenerator
 import com.ruchij.api.services.todo.TodoServiceImpl
@@ -31,13 +32,9 @@ fun main() {
 fun runApi(apiConfiguration: ApiConfiguration, clock: Clock, uuidGenerator: RandomGenerator<UUID>): RoutingHttpHandler {
     runMigration(apiConfiguration.database)
 
-    val jdbi: Jdbi =
-        Jdbi.create(apiConfiguration.database.url, apiConfiguration.database.user, apiConfiguration.database.password)
-            .installPlugin(KotlinPlugin())
-            .registerColumnMapper(DateTimeMapper)
-            .registerColumnMapper(UuidMapper)
+    val jdbi: Jdbi = JdbiConfiguration.create(apiConfiguration.database)
 
-    val todoItemDao = Jdbi3TodoItemDao(jdbi)
+    val todoItemDao = JdbiTodoItemDao(jdbi)
     val todoService = TodoServiceImpl(clock, uuidGenerator, todoItemDao)
 
     val healthService = HealthServiceImpl(clock, jdbi)
