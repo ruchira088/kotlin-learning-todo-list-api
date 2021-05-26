@@ -1,5 +1,8 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     kotlin("jvm") version "1.5.0"
+    application
 }
 
 group = "com.ruchij"
@@ -16,4 +19,19 @@ dependencies {
     implementation("com.h2database:h2:1.4.200")
     implementation("org.postgresql:postgresql:42.2.20")
     implementation("ch.qos.logback:logback-classic:1.2.3")
+}
+
+application {
+    mainClass.set("com.ruchij.migration.MigrationAppKt")
+}
+
+distributions {
+    main {
+        contents {
+        }
+    }
+}
+
+tasks.withType<KotlinCompile> {
+    kotlinOptions.jvmTarget = "11"
 }

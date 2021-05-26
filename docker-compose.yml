@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  postgres-database:
+    image: postgres
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U admin -d todo-api" ]
+      interval: 5s
+      timeout: 4s
+      retries: 5
+    environment:
+      POSTGRES_DB: todo-api
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: Passw0rd
+
+  todo-list-api:
+    image: todo-list-api:latest
+    depends_on:
+      postgres-database:
+        condition: service_healthy
+    ports:
+      - 8000:8000
+    environment:
+      HTTP_PORT: 8000
+      DATABASE_USER: admin
+      DATABASE_PASSWORD: Passw0rd
+      DATABASE_URL: jdbc:postgresql://postgres-database:5432/todo-api

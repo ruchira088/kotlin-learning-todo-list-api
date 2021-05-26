@@ -1,0 +1,10 @@
+---
+- hosts: localhost
+  connection: local
+
+  tasks:
+    - name: Build Gradle project
+      shell: cd .. && gradle clean api:distTar
+
+    - name: Build production Docker image
+      shell: docker build -t todo-list-api:latest -f resources/Dockerfile ../
