@@ -30,7 +30,7 @@ class TodoServiceImpl(
     override fun deleteById(id: UUID): TodoItem =
         todoItemDao.deleteById(id) ?: throw ResourceNotFoundException("Unable to find todo item with id = $id")
 
-    override fun updateById(id: UUID, maybeTitle: String?, maybeDescription: String?, maybeCompletion: Boolean?): TodoItem =
+    override fun updateById(id: UUID, maybeTitle: String?, maybeDescription: String?, maybeCompleted: Boolean?): TodoItem =
         findById(id).let {
             todoItem ->
                 val timestamp = clock.timestamp()
@@ -40,11 +40,14 @@ class TodoServiceImpl(
                         modifiedAt = timestamp,
                         title = maybeTitle ?: todoItem.title,
                         description = maybeDescription.foldNullable({ todoItem.description}) { it.takeUnless { value -> value.isEmpty() }},
-                        completedAt = maybeCompletion.foldNullable({ todoItem.completedAt }) { completed -> timestamp.takeUnless { completed } }
+                        completedAt = maybeCompleted.foldNullable({ todoItem.completedAt }) { completed -> timestamp.takeUnless { completed } }
                     )
 
                 todoItemDao.update(updatedTodoItem)
 
                 return updatedTodoItem
         }
+
+    override fun search(maybeTitle: String?, maybeDescription: String?, maybeCompleted: Boolean?): List<TodoItem> =
+        todoItemDao.search(maybeTitle, maybeDescription, maybeCompleted)
 }

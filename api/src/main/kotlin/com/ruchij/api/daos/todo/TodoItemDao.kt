@@ -11,4 +11,6 @@ interface TodoItemDao {
     fun deleteById(id: UUID): TodoItem?
 
     fun update(todoItem: TodoItem)
+
+    fun search(maybeTitle: String?, maybeDescription: String?, maybeCompleted: Boolean?): List<TodoItem>
 }

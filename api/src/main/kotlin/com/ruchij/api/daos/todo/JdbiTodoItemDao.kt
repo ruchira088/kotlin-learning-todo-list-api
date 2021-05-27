@@ -1,7 +1,5 @@
 package com.ruchij.api.daos.todo
 
-import com.ruchij.api.daos.jdbi.arguments.DateTimeArgument
-import com.ruchij.api.daos.jdbi.arguments.UuidArgument
 import com.ruchij.api.daos.todo.models.TodoItem
 import com.ruchij.api.utils.Extensions.nullableType
 import org.jdbi.v3.core.Handle
@@ -20,9 +18,9 @@ class JdbiTodoItemDao(private val jdbi: Jdbi) : TodoItemDao {
                     VALUES (:id, :createdAt, :modifiedAt, :title, :description, :completedAt)
            """
             )
-                .bind("id", UuidArgument(todoItem.id))
-                .bind("createdAt", DateTimeArgument(todoItem.createdAt))
-                .bind("modifiedAt", DateTimeArgument(todoItem.modifiedAt))
+                .bind("id", todoItem.id)
+                .bind("createdAt", todoItem.createdAt)
+                .bind("modifiedAt", todoItem.modifiedAt)
                 .bind("title", todoItem.title)
                 .bind("description", todoItem.description)
                 .bind("completedAt", todoItem.completedAt)
@@ -36,7 +34,7 @@ class JdbiTodoItemDao(private val jdbi: Jdbi) : TodoItemDao {
         jdbi.inTransaction<TodoItem?, Exception> { handle ->
             findById(id, handle)?.also {
                 handle.createUpdate("DELETE FROM todo_item WHERE id = :id")
-                    .bind("id", UuidArgument(id))
+                    .bind("id", id)
                     .one()
             }
         }
@@ -48,7 +46,7 @@ class JdbiTodoItemDao(private val jdbi: Jdbi) : TodoItemDao {
                         WHERE id = :id
                 """
         )
-            .bind("id", UuidArgument(id))
+            .bind("id", id)
             .mapTo<TodoItem>()
             .findOne()
             .nullableType()
@@ -66,10 +64,24 @@ class JdbiTodoItemDao(private val jdbi: Jdbi) : TodoItemDao {
                         
             """
             )
-                .bind("modifiedAt", DateTimeArgument(todoItem.modifiedAt))
+                .bind("modifiedAt", todoItem.modifiedAt)
                 .bind("title", todoItem.title)
                 .bind("description", todoItem.description)
                 .bind("completedAt", todoItem.completedAt)
-                .one()
+        }
+
+    override fun search(maybeTitle: String?, maybeDescription: String?, maybeCompleted: Boolean?): List<TodoItem> =
+        jdbi.inTransaction<List<TodoItem>, Exception>{ handle ->
+            handle.createQuery("""
+                SELECT id, created_at, modified_at, title, description, completed_at FROM todo_item
+                WHERE (:title IS NULL OR title LIKE :title)
+                    AND (:description IS NULL OR description LIKE :description)
+                    AND ${if (maybeCompleted == null) "NULL IS NULL" else if (maybeCompleted) "completed_at IS NOT NULL" else "completed_at IS NULL"}
+            """
+            )
+                .bind("title", maybeTitle?.let { title -> "%${title}%" })
+                .bind("description", maybeDescription?.let { description -> "%${description}%" })
+                .mapTo<TodoItem>()
+                .list()
         }
 }

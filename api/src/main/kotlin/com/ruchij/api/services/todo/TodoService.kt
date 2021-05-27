@@ -10,5 +10,7 @@ interface TodoService {
 
     fun deleteById(id: UUID): TodoItem
 
-    fun updateById(id: UUID, maybeTitle: String?, maybeDescription: String?, maybeCompletion: Boolean?): TodoItem
+    fun updateById(id: UUID, maybeTitle: String?, maybeDescription: String?, maybeCompleted: Boolean?): TodoItem
+
+    fun search(maybeTitle: String?, maybeDescription: String?, maybeCompleted: Boolean?): List<TodoItem>
 }
